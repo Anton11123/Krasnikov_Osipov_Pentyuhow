@@ -1,13 +1,13 @@
 void
 render_state(struct game_state_t *state) {
-    // очищение содержимого в окне
+    // clear window content
     werase(state->win);
 
-    // вокруг поля
+    // render box around field
     box(state->win, 0, 0);
 
     if (state->running) {
-        // змея
+        // snake
         struct snake_body_part_t *current = state->snake;
         mvwaddch(state->win, current->position.y + 1, current->position.x + 1, '0' | COLOR_PAIR(1));
         current = current->next;
@@ -16,7 +16,7 @@ render_state(struct game_state_t *state) {
             current = current->next;
         }
 
-        // то, что она кушает (еда)
+        // food
         mvwaddch(state->win, state->food->position.y + 1, state->food->position.x + 1, 'X' | COLOR_PAIR(2));
     } else {
         int rows, cols;
@@ -29,10 +29,10 @@ render_state(struct game_state_t *state) {
             mvwprintw(state->win, rows / 2, (cols - strlen(msg)) / 2, msg);
         }
     }
-    // показ содержимого в окне
+    // show window content
     wrefresh(state->win);
 
-    // нажми enter, чтобы выйти из игры
+    // wait for enter after the game was finished
     if (!state->running) {
         nodelay(state->win, 0);
         nocbreak();
@@ -42,7 +42,7 @@ render_state(struct game_state_t *state) {
 
 struct game_state_t *
 init_game_state() {
-    // инициализация библиотеки ncurses
+    // initialise ncurses
     initscr();
     int rows, cols;
     getmaxyx(stdscr, rows, cols);
@@ -63,7 +63,7 @@ init_game_state() {
     state->win = newwin(winHeight, winWidth, (rows - winHeight) / 2, (cols - winWidth) / 2);
     spawn_food(state);
 
-    // настройка параметров библиотеки для интерактивного использования
+    // set ncurses options for interactive usage
     cbreak();
     noecho();
     nodelay(state->win, 1);
@@ -75,8 +75,8 @@ init_game_state() {
     if (has_colors()) {
         start_color();
     }
-    init_pair(1, COLOR_GREEN, COLOR_BLACK); // цвет змеи
-    init_pair(2, COLOR_RED, COLOR_BLACK); // цвет еды
+    init_pair(1, COLOR_GREEN, COLOR_BLACK); // snake
+    init_pair(2, COLOR_RED, COLOR_BLACK); // food
 
     curs_set(0);
 
