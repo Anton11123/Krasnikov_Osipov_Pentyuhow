@@ -5,7 +5,7 @@
 #include <ncurses.h>
 #include <string.h>
 
-struct position_t {
+struct position_t { //
     int x;
     int y;
 };
